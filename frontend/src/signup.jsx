@@ -1,19 +1,23 @@
-
 import { useState } from "react";
+import { Eye, EyeOff, Mail, User } from "lucide-react";
 
 export default function Signup({ onCreateAccount, onLogin }) {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
 
   function handleSubmit(e) {
     e.preventDefault();
     setError("");
 
-    const name = e.target.name.value.trim();
+    const firstName = e.target.firstName.value.trim();
+    const lastName = e.target.lastName.value.trim();
+    const name = `${firstName} ${lastName}`.trim();
     const email = e.target.email.value.trim().toLowerCase();
     const password = e.target.password.value;
     const confirmPassword = e.target.confirmPassword.value;
 
-    if (!name || !email || !password || !confirmPassword) {
+    if (!firstName || !lastName || !email || !password || !confirmPassword) {
       setError("Please fill in all fields!");
       return;
     }
@@ -39,12 +43,16 @@ export default function Signup({ onCreateAccount, onLogin }) {
       customers = JSON.parse(
         localStorage.getItem("smokinCustomers") || "[]"
       );
+
+      if (!Array.isArray(customers)) {
+        customers = [];
+      }
     } catch {
       customers = [];
     }
 
     const existingUser = customers.find(
-      (customer) => customer.email.toLowerCase() === email
+      (customer) => customer.email?.toLowerCase() === email
     );
 
     if (existingUser) {
@@ -53,7 +61,10 @@ export default function Signup({ onCreateAccount, onLogin }) {
     }
 
     const newUser = {
+      id: Date.now(),
       name,
+      firstName,
+      lastName,
       email,
       password,
       role: "customer",
@@ -61,10 +72,15 @@ export default function Signup({ onCreateAccount, onLogin }) {
 
     customers.push(newUser);
 
-    localStorage.setItem(
-      "smokinCustomers",
-      JSON.stringify(customers)
-    );
+    try {
+      localStorage.setItem(
+        "smokinCustomers",
+        JSON.stringify(customers)
+      );
+    } catch {
+      setError("Unable to save account. Please try again.");
+      return;
+    }
 
     alert("Account created successfully! Please login.");
 
@@ -73,94 +89,184 @@ export default function Signup({ onCreateAccount, onLogin }) {
 
   return (
     <div
-      className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-cover bg-center bg-no-repeat px-5 py-8 font-[Arial] text-white"
+      className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-slate-950 bg-cover bg-center bg-no-repeat p-6 font-sans text-white"
       style={{ backgroundImage: "url('/image/image1.png')" }}
     >
-      {/* WHITE TRANSPARENT OVERLAY */}
-      <div className="absolute inset-0 bg-white/10 pointer-events-none" />
+      {/* SUBTLE RADIAL VIGNETTE */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(15,23,42,0.15)_0%,rgba(2,6,23,0.65)_100%)]" />
 
-      {/* WHITE GLASS CARD */}
-      <div className="relative z-10 w-full max-w-[800px] rounded-[35px] border-2 border-white/80 bg-white/15 px-10 py-8 shadow-[0_0_35px_rgba(255,255,255,0.25)] backdrop-blur-sm max-[600px]:rounded-[25px] max-[600px]:px-6 max-[600px]:py-7">
+      {/* DARK GLASSMORPHISM SIGNUP CARD */}
+      <div
+        className="relative z-10 mx-auto box-border w-full max-w-[460px] rounded-2xl border border-white/20 bg-slate-950/65 shadow-[0_20px_50px_rgba(0,0,0,0.65)] backdrop-blur-md"
+        style={{ padding: "28px 26px" }}
+      >
+        {/* CENTERED HEADER */}
+        <div className="mb-5 text-center">
+          <h1 className="text-xl font-normal tracking-[0.08em] text-white/95 sm:text-2xl">
+            SMOKIN ANDROIDS
+          </h1>
 
-        <h1 className="mb-5 text-center text-[46px] font-extrabold tracking-[2px] text-fuchsia-400 drop-shadow-[0_0_12px_rgba(192,38,211,0.8)] max-[600px]:text-[28px]">
-          SMOKIN ANDROIDS
-        </h1>
+          <h2 className="mt-2 text-[26px] font-medium leading-tight text-white">
+            Create Account
+          </h2>
 
-        <h2 className="mb-2 text-[65px] font-extrabold leading-tight text-white max-[600px]:text-[38px]">
-          Create Account
-        </h2>
+          <p className="mt-1 text-xs text-slate-300 sm:text-sm">
+            Sign up to get started.
+          </p>
+        </div>
 
-        <p className="mb-6 text-[29px] text-white max-[600px]:text-[16px]">
-          Sign up to get started with SMOKIN ANDROIDS.
-        </p>
+        <form onSubmit={handleSubmit} className="w-full">
+          {/* ROW 1: FIRST NAME & LAST NAME (MAGKATABI) */}
+          <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {/* FIRST NAME */}
+            <div>
+              <label className="mb-1.5 block text-left text-[13px] font-medium text-white/95">
+                First Name
+              </label>
+              <div className="relative h-10 w-full">
+                <input
+                  type="text"
+                  name="firstName"
+                  placeholder="Enter your first name"
+                  autoComplete="given-name"
+                  style={{ paddingLeft: "12px", paddingRight: "34px" }}
+                  className="box-border h-full w-full rounded-lg border border-white/25 bg-white/5 text-[13px] text-white outline-none transition placeholder:text-white/50 focus:border-white/60 focus:bg-white/10"
+                />
+                <User
+                  size={16}
+                  className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 fill-white text-white"
+                />
+              </div>
+            </div>
 
-        <form onSubmit={handleSubmit}>
-          <label className="mb-2 block text-[25px] font-semibold text-white max-[600px]:text-[16px]">
-            Full Name
-          </label>
+            {/* LAST NAME */}
+            <div>
+              <label className="mb-1.5 block text-left text-[13px] font-medium text-white/95">
+                Last Name
+              </label>
+              <div className="relative h-10 w-full">
+                <input
+                  type="text"
+                  name="lastName"
+                  placeholder="Enter your last name"
+                  autoComplete="family-name"
+                  style={{ paddingLeft: "12px", paddingRight: "34px" }}
+                  className="box-border h-full w-full rounded-lg border border-white/25 bg-white/5 text-[13px] text-white outline-none transition placeholder:text-white/50 focus:border-white/60 focus:bg-white/10"
+                />
+                <User
+                  size={16}
+                  className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 fill-white text-white"
+                />
+              </div>
+            </div>
+          </div>
 
-          <input
-            type="text"
-            name="name"
-            placeholder="Enter your full name"
-            className="mb-4 h-[64px] w-full rounded-[23px] border-2 border-white/80 bg-white/20 px-6 text-[25px] text-white outline-none placeholder:text-white/80 focus:border-white focus:bg-white/35 max-[600px]:h-[50px] max-[600px]:rounded-[15px] max-[600px]:text-[16px]"
-          />
+          {/* ROW 2: EMAIL ADDRESS (FULL WIDTH) */}
+          <div className="mb-4">
+            <label className="mb-1.5 block text-left text-[13px] font-medium text-white/95">
+              Email Address
+            </label>
+            <div className="relative h-10 w-full">
+              <input
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                autoComplete="email"
+                style={{ paddingLeft: "12px", paddingRight: "38px" }}
+                className="box-border h-full w-full rounded-lg border border-white/25 bg-white/5 text-[13px] text-white outline-none transition placeholder:text-white/50 focus:border-white/60 focus:bg-white/10"
+              />
+              <Mail
+                size={16}
+                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-white/85"
+              />
+            </div>
+          </div>
 
-          <label className="mb-2 block text-[25px] font-semibold text-white max-[600px]:text-[16px]">
-            Email Address
-          </label>
+          {/* ROW 3: PASSWORD & CONFIRM PASSWORD (MAGKATABI) */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {/* PASSWORD */}
+            <div>
+              <label className="mb-1.5 block text-left text-[13px] font-medium text-white/95">
+                Password
+              </label>
+              <div className="relative h-10 w-full">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Create a password"
+                  autoComplete="new-password"
+                  style={{ paddingLeft: "12px", paddingRight: "34px" }}
+                  className="box-border h-full w-full rounded-lg border border-white/25 bg-white/5 text-[13px] text-white outline-none transition placeholder:text-white/50 focus:border-white/60 focus:bg-white/10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-1.5 top-1/2 flex h-7 w-7 -translate-y-1/2 cursor-pointer items-center justify-center rounded text-white/85 transition hover:text-white"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+            </div>
 
-          <input
-            type="email"
-            name="email"
-            placeholder="Enter your email"
-            className="mb-4 h-[64px] w-full rounded-[23px] border-2 border-white/80 bg-white/20 px-6 text-[25px] text-white outline-none placeholder:text-white/80 focus:border-white focus:bg-white/35 max-[600px]:h-[50px] max-[600px]:rounded-[15px] max-[600px]:text-[16px]"
-          />
+            {/* CONFIRM PASSWORD */}
+            <div>
+              <label className="mb-1.5 block text-left text-[13px] font-medium text-white/95">
+                Confirm Password
+              </label>
+              <div className="relative h-10 w-full">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  placeholder="Confirm your password."
+                  autoComplete="new-password"
+                  style={{ paddingLeft: "12px", paddingRight: "34px" }}
+                  className="box-border h-full w-full rounded-lg border border-white/25 bg-white/5 text-[13px] text-white outline-none transition placeholder:text-white/50 focus:border-white/60 focus:bg-white/10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-1.5 top-1/2 flex h-7 w-7 -translate-y-1/2 cursor-pointer items-center justify-center rounded text-white/85 transition hover:text-white"
+                  aria-label={
+                    showConfirmPassword ? "Hide password" : "Show password"
+                  }
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff size={16} />
+                  ) : (
+                    <Eye size={16} />
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
 
-          <label className="mb-2 block text-[25px] font-semibold text-white max-[600px]:text-[16px]">
-            Password
-          </label>
-
-          <input
-            type="password"
-            name="password"
-            placeholder="Create a password"
-            className="mb-4 h-[64px] w-full rounded-[23px] border-2 border-white/80 bg-white/20 px-6 text-[25px] text-white outline-none placeholder:text-white/80 focus:border-white focus:bg-white/35 max-[600px]:h-[50px] max-[600px]:rounded-[15px] max-[600px]:text-[16px]"
-          />
-
-          <label className="mb-2 block text-[25px] font-semibold text-white max-[600px]:text-[16px]">
-            Confirm Password
-          </label>
-
-          <input
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm your password"
-            className="mb-6 h-[64px] w-full rounded-[23px] border-2 border-white/80 bg-white/20 px-6 text-[25px] text-white outline-none placeholder:text-white/80 focus:border-white focus:bg-white/35 max-[600px]:h-[50px] max-[600px]:rounded-[15px] max-[600px]:text-[16px]"
-          />
-
+          {/* ERROR MESSAGE */}
           {error && (
-            <p className="mb-4 text-center text-[16px] font-semibold text-red-200">
+            <p className="mt-4 text-center text-xs font-semibold text-red-300">
               {error}
             </p>
           )}
 
+          {/* SIGN UP BUTTON WITH BREATHING ROOM SA TAAS AT BABA */}
           <button
             type="submit"
-            className="h-[75px] w-full rounded-full border-2 border-white/90 bg-white/25 text-[34px] font-extrabold text-white shadow-[0_0_20px_rgba(255,255,255,0.25)] transition duration-300 hover:scale-[1.01] hover:bg-white/45 max-[600px]:h-[55px] max-[600px]:text-[20px]"
+            style={{ marginTop: "22px", marginBottom: "18px" }}
+            className="h-11 w-full cursor-pointer rounded-lg bg-[#a20cdb] text-[15px] font-bold tracking-wider text-white shadow-lg shadow-purple-900/40 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#b51cf0] active:translate-y-0"
           >
-            CREATE ACCOUNT
+            SIGN UP
           </button>
         </form>
 
-        <p className="mt-5 text-center text-[27px] text-white max-[600px]:text-[15px]">
+        {/* SIGN IN LINK */}
+        <p className="text-center text-xs text-white/90">
           Already have an account?{" "}
           <button
             type="button"
             onClick={onLogin}
-            className="font-bold text-fuchsia-300 transition hover:text-white hover:underline"
+            className="cursor-pointer font-semibold text-blue-300 transition hover:text-blue-200 hover:underline"
           >
-            Login
+            Sign In
           </button>
         </p>
       </div>

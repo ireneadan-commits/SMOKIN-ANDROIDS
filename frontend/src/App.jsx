@@ -12,11 +12,17 @@ import TabletPage from "./Tablet";
 import VapePage from "./Vape";
 import AdminDashboard from "./AdminDashboard";
 
-function App() {
+export default function App() {
   const [page, setPage] = useState("welcome");
   const [currentUser, setCurrentUser] = useState(null);
 
-  function handleLogin(user) {
+  // LOGIN
+  const handleLogin = (user) => {
+    if (!user) {
+      alert("Invalid user account.");
+      return;
+    }
+
     setCurrentUser(user);
 
     if (user.role === "admin") {
@@ -24,25 +30,29 @@ function App() {
     } else {
       setPage("home");
     }
-  }
+  };
 
-  function handleCreateAccount() {
+  // SIGNUP
+  const handleCreateAccount = () => {
     setPage("login");
-  }
+  };
 
-  function handleLogout() {
+  // LOGOUT
+  const handleLogout = () => {
     setCurrentUser(null);
     setPage("welcome");
-  }
+  };
 
-  // WELCOME
+  // WELCOME PAGE
   if (page === "welcome") {
     return (
-      <Welcome onGetStarted={() => setPage("login")} />
+      <Welcome
+        onGetStarted={() => setPage("login")}
+      />
     );
   }
 
-  // LOGIN
+  // LOGIN PAGE
   if (page === "login") {
     return (
       <Login
@@ -52,7 +62,7 @@ function App() {
     );
   }
 
-  // SIGNUP
+  // SIGNUP PAGE
   if (page === "signup") {
     return (
       <Signup
@@ -63,17 +73,17 @@ function App() {
   }
 
   // ADMIN DASHBOARD
-  if (page === "admin" && currentUser?.role === "admin") {
+  if (page === "admin") {
     return (
       <AdminDashboard
-        user={currentUser}
+        currentUser={currentUser}
         onLogout={handleLogout}
       />
     );
   }
 
-  // HOME
-  if (page === "home" && currentUser) {
+  // HOME PAGE
+  if (page === "home") {
     return (
       <Home
         user={currentUser}
@@ -83,8 +93,8 @@ function App() {
     );
   }
 
-  // PRODUCTS
-  if (page === "products" && currentUser) {
+  // PRODUCTS PAGE
+  if (page === "products") {
     return (
       <Products
         onBack={() => setPage("home")}
@@ -97,8 +107,8 @@ function App() {
     );
   }
 
-  // CELLPHONE
-  if (page === "cellphone" && currentUser) {
+  // CELLPHONE PAGE
+  if (page === "cellphone") {
     return (
       <Cellphone
         onBack={() => setPage("products")}
@@ -107,18 +117,21 @@ function App() {
     );
   }
 
-  // LAPTOP
-  if (page === "laptop" && currentUser) {
+  // LAPTOP PAGE
+  if (page === "laptop") {
     return (
       <Laptop
         onBack={() => setPage("products")}
+        onHome={() => setPage("home")}
         onLogout={handleLogout}
+        isAdmin={currentUser?.role === "admin"}
+        currentUser={currentUser}
       />
     );
   }
 
-  // TABLET
-  if (page === "tablet" && currentUser) {
+  // TABLET PAGE
+  if (page === "tablet") {
     return (
       <TabletPage
         onBack={() => setPage("products")}
@@ -127,8 +140,8 @@ function App() {
     );
   }
 
-  // VAPE
-  if (page === "vape" && currentUser) {
+  // VAPE PAGE
+  if (page === "vape") {
     return (
       <VapePage
         onBack={() => setPage("products")}
@@ -137,9 +150,10 @@ function App() {
     );
   }
 
+  // FALLBACK
   return (
-    <Welcome onGetStarted={() => setPage("login")} />
+    <Welcome
+      onGetStarted={() => setPage("login")}
+    />
   );
 }
-
-export default App;

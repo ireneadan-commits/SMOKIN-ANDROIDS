@@ -8,168 +8,270 @@ import {
   Menu,
   ArrowRight,
   Star,
-  Home,
+  Home as HomeIcon,
   ShoppingBag,
   ShieldCheck,
   Zap,
   Headphones,
 } from "lucide-react";
 
-export default function HomePage({ user, onLogout, onProducts }) {
+export default function HomePage({ user, onLogout, onProducts, onLogin }) {
   const [showProfile, setShowProfile] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [selectedFeature, setSelectedFeature] = useState(null);
 
   const handleProducts = () => {
-    onProducts?.();
+    setShowProfile(false);
     setShowMobileMenu(false);
+    onProducts?.();
   };
+
+  const handleLogout = () => {
+    setShowProfile(false);
+    setShowMobileMenu(false);
+    onLogout?.();
+  };
+
+  const features = [
+    {
+      title: "Quality",
+      subtitle: "Premium Devices",
+      icon: <ShieldCheck size={26} strokeWidth={2.2} />,
+      description:
+        "We offer premium smartphones from trusted brands, built with high-quality materials and designed for durability, reliability, and an excellent user experience.",
+    },
+    {
+      title: "Performance",
+      subtitle: "Powerful Features",
+      icon: <Zap size={26} strokeWidth={2.2} />,
+      description:
+        "Experience fast performance, smooth multitasking, powerful processors, and advanced features designed to keep up with your everyday needs.",
+    },
+    {
+      title: "Support",
+      subtitle: "Always Here",
+      icon: <Headphones size={26} strokeWidth={2.2} />,
+      description:
+        "We are here to help you choose the right smartphone. Our goal is to provide helpful assistance, reliable service, and a satisfying shopping experience.",
+    },
+  ];
 
   return (
     <div
       id="home"
-      className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-[#eaf5ff] via-[#d5e9ff] to-[#b5d6ff] text-[#10366d]"
+      className="relative flex min-h-screen w-full flex-col justify-between overflow-x-hidden bg-gradient-to-br from-[#07182e] via-[#13355c] to-[#081b33] font-sans text-white selection:bg-cyan-400 selection:text-slate-950"
     >
       {/* BACKGROUND DECORATIONS */}
-      <div className="pointer-events-none absolute -left-40 -top-40 h-[450px] w-[450px] rounded-full bg-white/70 blur-[100px]" />
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute left-[10%] top-[18%] h-[420px] w-[420px] rounded-full bg-sky-500/20 blur-[120px]" />
+        <div className="absolute right-[10%] top-[12%] h-[500px] w-[500px] rounded-full bg-cyan-400/25 blur-[130px]" />
+        <div className="absolute bottom-[5%] left-[35%] h-[360px] w-[520px] rounded-full bg-blue-400/15 blur-[110px]" />
 
-      <div className="pointer-events-none absolute -bottom-40 -right-40 h-[500px] w-[500px] rounded-full bg-blue-400/30 blur-[100px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(56,189,248,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(56,189,248,0.06)_1px,transparent_1px)] bg-[size:44px_44px]" />
 
-      {/* NAVBAR */}
-      <header className="sticky top-0 z-50 border-b border-white/60 bg-[#082b64] shadow-lg">
-        <div className="mx-auto flex max-w-[1500px] items-center justify-between gap-4 px-5 py-3 sm:px-8">
+        <svg
+          className="absolute inset-0 h-full w-full opacity-45"
+          viewBox="0 0 1440 800"
+          fill="none"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M-100 660 C 300 480, 620 780, 1020 500 C 1240 340, 1380 420, 1560 280 L 1560 850 L -100 850 Z"
+            fill="url(#cyberWave1)"
+          />
+          <path
+            d="M-120 520 C 360 720, 740 320, 1180 540 C 1340 620, 1440 480, 1560 440 L 1560 850 L -120 850 Z"
+            fill="url(#cyberWave2)"
+          />
 
+          <defs>
+            <linearGradient
+              id="cyberWave1"
+              x1="0"
+              y1="0"
+              x2="1440"
+              y2="800"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop offset="0%" stopColor="#0f294a" stopOpacity="0.85" />
+              <stop offset="50%" stopColor="#38bdf8" stopOpacity="0.22" />
+              <stop offset="100%" stopColor="#091a32" stopOpacity="0.9" />
+            </linearGradient>
+
+            <linearGradient
+              id="cyberWave2"
+              x1="1440"
+              y1="0"
+              x2="0"
+              y2="800"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop offset="0%" stopColor="#bae6fd" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="#0b223f" stopOpacity="0.7" />
+            </linearGradient>
+          </defs>
+        </svg>
+
+        <div className="absolute left-[45.5%] top-[33%] h-12 w-12 rounded-full border border-white/50 bg-gradient-to-br from-white/50 via-sky-300/20 to-slate-900/50 shadow-[0_8px_20px_rgba(0,0,0,0.4)] backdrop-blur-sm" />
+        <div className="absolute right-[13%] top-[22%] h-7 w-7 rounded-full border border-white/60 bg-gradient-to-br from-white/70 to-cyan-400/30 shadow-md" />
+        <div className="absolute bottom-[30%] left-[64%] h-8 w-8 rounded-full border border-white/50 bg-gradient-to-br from-white/60 to-sky-400/25 shadow-md" />
+      </div>
+
+      {/* HEADER */}
+      <header className="sticky top-0 z-50 border-b border-cyan-300/20 bg-[#0b2342]/75 shadow-[0_6px_30px_rgba(2,10,24,0.55)] backdrop-blur-xl">
+        <div
+          style={{
+            width: "100%",
+            maxWidth: "1380px",
+            margin: "0 auto",
+            paddingLeft: "clamp(20px, 4vw, 48px)",
+            paddingRight: "clamp(20px, 4vw, 48px)",
+          }}
+          className="box-border flex items-center justify-between gap-4 py-3.5"
+        >
           {/* LOGO */}
-          <a href="#home" className="flex shrink-0 items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-blue-800">
-              <Smartphone size={50
-} />
+          <button
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="flex shrink-0 cursor-pointer items-center gap-3 text-left"
+          >
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-cyan-300/45 bg-gradient-to-br from-sky-400/25 to-blue-900/50 text-cyan-300 shadow-[0_0_16px_rgba(56,189,248,0.3)]">
+              <Smartphone size={21} strokeWidth={2.2} />
             </div>
 
             <div>
-              <h1 className="text-lg font-black leading-tight tracking-wide text-white sm:text-xl">
+              <h1 className="text-base font-black leading-none tracking-wide text-white sm:text-lg">
                 SMOKIN
-                <span className="block text-blue-300">
-                  ANDROIDS
-                </span>
+                <span className="mt-0.5 block text-sky-400">ANDROIDS</span>
               </h1>
 
-              <p className="text-[8px] font-bold tracking-[2px] text-blue-100">
+              <p className="mt-1 text-[8px] font-bold tracking-[0.22em] text-slate-300">
                 PREMIUM SMARTPHONES
               </p>
             </div>
-          </a>
+          </button>
 
           {/* DESKTOP NAVIGATION */}
-          <nav className="hidden items-center gap-2 lg:flex">
-            <a
-              href="#home"
-              className="flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-blue-900 shadow-md"
+          <div className="hidden items-center gap-3 md:flex">
+            <button
+              type="button"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              className="flex cursor-pointer items-center gap-2 rounded-full border border-cyan-300/70 bg-gradient-to-r from-sky-500/35 to-cyan-400/25 px-5 py-2 text-sm font-semibold text-white shadow-[0_0_18px_rgba(56,189,248,0.45)] backdrop-blur-md transition hover:border-cyan-200 hover:bg-sky-500/45"
             >
-              <Home size={17} />
+              <HomeIcon size={16} className="text-cyan-300" />
               Home
-            </a>
+            </button>
 
             <button
+              type="button"
               onClick={handleProducts}
-              className="flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/15"
+              className="flex cursor-pointer items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-2 text-sm font-semibold text-slate-100 backdrop-blur-md transition hover:border-cyan-300/60 hover:bg-white/20"
             >
-              <ShoppingBag size={17} />
+              <ShoppingBag size={16} className="text-cyan-300" />
               Products
             </button>
-          </nav>
 
-          {/* PROFILE */}
-          <div className="relative hidden md:block">
-            <button
-              onClick={() => setShowProfile(!showProfile)}
-              className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-blue-900 transition hover:bg-blue-100"
-            >
-              <UserRound size={22} />
-            </button>
+            {/* PROFILE */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => {
+                  if (!user && onLogin) {
+                    onLogin();
+                  } else {
+                    setShowProfile(!showProfile);
+                  }
+                }}
+                className="flex cursor-pointer items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-2 text-sm font-bold text-white backdrop-blur-md transition hover:border-cyan-300/60 hover:bg-white/20"
+                aria-label="User Profile or Login"
+              >
+                <span>
+                  {user ? user?.name || user?.username || "Profile" : "Login"}
+                </span>
+                <UserRound size={17} className="text-cyan-300" />
+              </button>
 
-            {showProfile && (
-              <div className="absolute right-0 top-14 z-50 w-64 rounded-2xl border border-blue-100 bg-white p-5 text-slate-800 shadow-2xl">
+              {showProfile && (
+                <div className="absolute right-0 top-13 z-50 w-64 rounded-2xl border border-cyan-300/30 bg-[#0b2342]/95 p-5 text-white shadow-2xl backdrop-blur-xl">
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-cyan-300/40 bg-sky-500/20 text-cyan-300">
+                      <UserRound size={22} />
+                    </div>
 
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-blue-100 text-blue-700">
-                    <UserRound size={22} />
+                    <div className="min-w-0">
+                      <p className="truncate font-bold text-white">
+                        {user?.name || user?.username || "User"}
+                      </p>
+
+                      <p className="truncate text-xs text-slate-300">
+                        {user?.email || "Welcome"}
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="min-w-0">
-                    <p className="truncate font-bold">
-                      {user?.name || user?.username || "User"}
-                    </p>
-
-                    <p className="truncate text-xs text-slate-500">
-                      {user?.email || "Welcome"}
-                    </p>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="flex w-full cursor-pointer items-center gap-2 rounded-xl border border-red-400/30 bg-red-500/20 px-4 py-2.5 text-sm font-semibold text-red-200 transition hover:bg-red-500/30"
+                  >
+                    <LogOut size={16} />
+                    Logout
+                  </button>
                 </div>
-
-                <button
-                  onClick={() => {
-                    setShowProfile(false);
-                    onLogout?.();
-                  }}
-                  className="flex w-full items-center gap-2 rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-600 transition hover:bg-red-100"
-                >
-                  <LogOut size={17} />
-                  Logout
-                </button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
 
           {/* MOBILE MENU BUTTON */}
           <button
+            type="button"
             onClick={() => setShowMobileMenu(!showMobileMenu)}
-            className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-blue-900 lg:hidden"
+            className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/30 bg-white/15 text-white shadow-sm md:hidden"
+            aria-label="Toggle Menu"
           >
-            {showMobileMenu ? (
-              <X size={23} />
-            ) : (
-              <Menu size={23} />
-            )}
+            {showMobileMenu ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
 
-        {/* MOBILE NAVIGATION */}
+        {/* MOBILE MENU */}
         {showMobileMenu && (
-          <div className="border-t border-white/20 bg-[#082b64] p-5 lg:hidden">
+          <div className="border-t border-cyan-300/20 bg-[#0b2342] p-5 md:hidden">
             <div className="flex flex-col gap-3">
-
-              <a
-                href="#home"
-                onClick={() => setShowMobileMenu(false)}
-                className="rounded-xl bg-white/15 px-4 py-3 font-semibold text-white"
+              <button
+                type="button"
+                onClick={() => {
+                  setShowMobileMenu(false);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                className="flex items-center gap-2 rounded-xl bg-sky-500/25 px-4 py-3 text-left font-semibold text-white"
               >
+                <HomeIcon size={18} className="text-cyan-300" />
                 Home
-              </a>
+              </button>
 
               <button
+                type="button"
                 onClick={handleProducts}
-                className="flex items-center gap-2 rounded-xl px-4 py-3 text-left font-semibold text-white transition hover:bg-white/15"
+                className="flex items-center gap-2 rounded-xl px-4 py-3 text-left font-semibold text-slate-200 transition hover:bg-white/10"
               >
-                <ShoppingBag size={18} />
+                <ShoppingBag size={18} className="text-cyan-300" />
                 Products
               </button>
 
-              <div className="rounded-xl border border-white/20 bg-white/10 px-4 py-3">
+              <div className="rounded-xl border border-cyan-300/20 bg-white/10 px-4 py-3">
                 <p className="text-sm font-semibold text-white">
-                  {user?.name || user?.username || "User"}
+                  {user?.name || user?.username || "Guest User"}
                 </p>
 
-                <p className="mt-1 text-xs text-blue-200">
-                  {user?.email || "Welcome"}
+                <p className="mt-0.5 text-xs text-slate-300">
+                  {user?.email || "Welcome to Smokin Androids"}
                 </p>
               </div>
 
               <button
-                onClick={() => {
-                  setShowMobileMenu(false);
-                  onLogout?.();
-                }}
-                className="flex items-center gap-2 rounded-xl px-4 py-3 text-left font-semibold text-red-200 transition hover:bg-white/10"
+                type="button"
+                onClick={handleLogout}
+                className="flex items-center gap-2 rounded-xl px-4 py-3 text-left font-semibold text-red-300 transition hover:bg-red-500/15"
               >
                 <LogOut size={18} />
                 Logout
@@ -179,119 +281,106 @@ export default function HomePage({ user, onLogout, onProducts }) {
         )}
       </header>
 
-      {/* MAIN CONTENT */}
-      <main className="relative z-10 mx-auto max-w-[1450px] px-4 pb-12 pt-7 sm:px-7 lg:px-10">
-
-        {/* HERO SECTION */}
-        <section className="grid items-center gap-6 rounded-[30px] border border-white/70 bg-white/25 p-5 shadow-xl shadow-blue-900/10 backdrop-blur-xl sm:p-8 lg:grid-cols-2 lg:gap-10 lg:p-12">
-
-          {/* HERO TEXT */}
-          <div className="rounded-[25px] border border-white/80 bg-white/45 p-6 shadow-lg backdrop-blur-xl sm:p-9">
-
-            {/* PREMIUM LABEL */}
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white bg-white/70 px-4 py-2 text-xs font-bold text-blue-800">
-              <Star
-                size={15}
-                className="fill-yellow-400 text-yellow-500"
-              />
+      {/* HERO SECTION */}
+      <main
+        style={{
+          width: "100%",
+          maxWidth: "1380px",
+          margin: "0 auto",
+          paddingLeft: "clamp(20px, 4vw, 48px)",
+          paddingRight: "clamp(20px, 4vw, 48px)",
+        }}
+        className="relative z-10 my-auto box-border py-8 lg:py-10"
+      >
+        <section className="grid items-center gap-10 lg:grid-cols-12 lg:gap-8">
+          {/* LEFT CONTENT */}
+          <div className="lg:col-span-6">
+            <div className="mb-3 inline-flex items-center gap-2 text-xs font-extrabold tracking-[0.16em] text-slate-200">
+              <Star size={14} className="fill-slate-200 text-slate-200" />
               PREMIUM SMARTPHONES
             </div>
 
-            {/* HEADING */}
-            <h2 className="text-4xl font-black leading-tight tracking-tight text-[#10366d] sm:text-5xl lg:text-6xl">
+            <h2 className="text-4xl font-black leading-[1.08] tracking-tight text-white sm:text-5xl xl:text-[3.7rem]">
               Discover Your
-
-              <span className="block text-blue-600">
+              <span className="mt-1 block bg-gradient-to-r from-[#38bdf8] via-[#22d3ee] to-[#60a5fa] bg-clip-text text-transparent drop-shadow-[0_0_24px_rgba(56,189,248,0.35)]">
                 Next Smartphone.
               </span>
             </h2>
 
-            {/* DESCRIPTION */}
-            <p className="mt-5 max-w-lg text-sm leading-7 text-slate-700 sm:text-base">
+            <p className="mt-4 max-w-lg text-sm leading-relaxed text-slate-200 sm:text-base">
               Explore the latest smartphones from leading brands around the
               world. Find the perfect device that matches your lifestyle.
             </p>
 
             {/* EXPLORE BUTTON */}
             <button
+              type="button"
               onClick={handleProducts}
-              className="mt-7 flex items-center gap-3 rounded-full bg-gradient-to-r from-blue-800 to-blue-600 px-7 py-4 text-sm font-bold text-white shadow-lg transition hover:-translate-y-1 hover:from-blue-900 hover:to-blue-700"
+              className="mt-6 inline-flex cursor-pointer items-center gap-2.5 rounded-full border border-sky-300/60 bg-gradient-to-r from-[#134e9e] via-[#1b6bd4] to-[#2589f5] px-7 py-2.5 text-xs font-bold tracking-wide text-white shadow-[0_0_25px_rgba(37,137,245,0.55)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_32px_rgba(56,189,248,0.85)] sm:text-sm"
             >
               Explore Collection
-              <ArrowRight size={19} />
+              <ArrowRight size={16} />
             </button>
 
-            {/* FEATURES */}
-            <div className="mt-9 grid grid-cols-3 divide-x divide-blue-300">
+            {/* CLICKABLE FEATURE CARDS */}
+            <div className="mt-9 grid max-w-xl grid-cols-3 gap-3 sm:gap-4">
+              {features.map((feature) => (
+                <button
+                  key={feature.title}
+                  type="button"
+                  onClick={() => setSelectedFeature(feature)}
+                  className="group relative flex flex-col items-center rounded-2xl border border-cyan-300/45 bg-gradient-to-b from-white/20 to-[#0c2747]/70 px-3 py-5 text-center shadow-[0_12px_28px_rgba(3,12,28,0.45)] backdrop-blur-xl transition hover:-translate-y-1 hover:border-cyan-200 hover:bg-white/20"
+                >
+                  {/* CORNER BRACKETS */}
+                  <span className="pointer-events-none absolute left-1.5 top-1.5 h-2.5 w-2.5 border-l-2 border-t-2 border-cyan-300/80" />
+                  <span className="pointer-events-none absolute right-1.5 top-1.5 h-2.5 w-2.5 border-r-2 border-t-2 border-cyan-300/80" />
+                  <span className="pointer-events-none absolute bottom-1.5 left-1.5 h-2.5 w-2.5 border-b-2 border-l-2 border-cyan-300/80" />
+                  <span className="pointer-events-none absolute bottom-1.5 right-1.5 h-2.5 w-2.5 border-b-2 border-r-2 border-cyan-300/80" />
 
-              {/* QUALITY */}
-              <div className="flex flex-col items-center gap-2 px-2 text-center">
-                <ShieldCheck size={28} className="text-blue-700" />
+                  <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl border border-white/40 bg-gradient-to-b from-white/50 to-sky-300/30 text-white shadow-[0_4px_15px_rgba(56,189,248,0.3)] transition group-hover:scale-105">
+                    {feature.icon}
+                  </div>
 
-                <p className="text-xs font-black text-blue-950">
-                  Quality
-                </p>
+                  <p className="text-xs font-extrabold text-white sm:text-sm">
+                    {feature.title}
+                  </p>
 
-                <p className="text-[9px] text-slate-600">
-                  Premium Devices
-                </p>
-              </div>
-
-              {/* PERFORMANCE */}
-              <div className="flex flex-col items-center gap-2 px-2 text-center">
-                <Zap size={28} className="text-blue-700" />
-
-                <p className="text-xs font-black text-blue-950">
-                  Performance
-                </p>
-
-                <p className="text-[9px] text-slate-600">
-                  Powerful Features
-                </p>
-              </div>
-
-              {/* SUPPORT */}
-              <div className="flex flex-col items-center gap-2 px-2 text-center">
-                <Headphones size={28} className="text-blue-700" />
-
-                <p className="text-xs font-black text-blue-950">
-                  Support
-                </p>
-
-                <p className="text-[9px] text-slate-600">
-                  Always Here
-                </p>
-              </div>
+                  <p className="mt-0.5 text-[10px] font-medium text-slate-300 sm:text-xs">
+                    {feature.subtitle}
+                  </p>
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* HERO PHONE IMAGE */}
-          <div className="relative flex min-h-[330px] items-center justify-center sm:min-h-[440px]">
+          {/* RIGHT PHONE SHOWCASE */}
+          <div className="relative flex min-h-[340px] items-center justify-center sm:min-h-[450px] lg:col-span-6">
+            {/* BACKLIGHT */}
+            <div className="pointer-events-none absolute h-72 w-72 rounded-full bg-cyan-400/25 blur-3xl sm:h-[420px] sm:w-[420px]" />
 
-            {/* GLOW */}
-            <div className="absolute h-64 w-64 rounded-full bg-blue-400/30 blur-3xl sm:h-96 sm:w-96" />
+            {/* ORBITAL RINGS */}
+            <div className="pointer-events-none absolute h-64 w-80 -rotate-12 rounded-[100%] border-2 border-cyan-300/65 shadow-[0_0_25px_rgba(56,189,248,0.45)] sm:h-[260px] sm:w-[470px]" />
+            <div className="pointer-events-none absolute h-56 w-80 rotate-12 rounded-[100%] border border-white/50 shadow-[0_0_20px_rgba(255,255,255,0.25)] sm:h-[240px] sm:w-[450px]" />
 
-            {/* CIRCLE */}
-            <div className="absolute h-64 w-64 rounded-full border-[18px] border-white/30 sm:h-80 sm:w-80" />
-
-            {/* ROTATED CIRCLE */}
-            <div className="absolute h-72 w-72 rotate-45 rounded-full border-2 border-blue-400/40 sm:h-96 sm:w-96" />
-
-            {/* PHONE IMAGE */}
+            {/* SMARTPHONE IMAGE */}
             <img
               src="/image/Iphone15.png"
               alt="Premium smartphone showcase"
-              className="relative z-10 h-[300px] w-full max-w-[340px] object-contain drop-shadow-2xl transition duration-500 hover:scale-105 sm:h-[410px]"
+              className="relative z-10 h-[310px] w-full max-w-[380px] object-contain drop-shadow-[0_26px_42px_rgba(2,10,24,0.8)] transition-transform duration-500 hover:scale-105 sm:h-[420px]"
             />
 
-            {/* FLOATING LABEL */}
-            <div className="absolute bottom-3 right-0 z-20 rounded-2xl border border-white bg-white/75 px-5 py-3 shadow-xl backdrop-blur-xl sm:bottom-8 sm:right-3">
+            {/* COLLECTION BADGE */}
+            <div className="absolute bottom-2 right-2 z-20 rounded-xl border border-cyan-300/60 bg-[#0b2342]/80 px-5 py-3 shadow-[0_12px_30px_rgba(2,10,24,0.7)] backdrop-blur-xl sm:bottom-5 sm:right-4">
+              <span className="pointer-events-none absolute -left-1 -top-1 h-2.5 w-2.5 border-l-2 border-t-2 border-cyan-300" />
+              <span className="pointer-events-none absolute -right-1 -top-1 h-2.5 w-2.5 border-r-2 border-t-2 border-cyan-300" />
+              <span className="pointer-events-none absolute -bottom-1 -left-1 h-2.5 w-2.5 border-b-2 border-l-2 border-cyan-300" />
+              <span className="pointer-events-none absolute -bottom-1 -right-1 h-2.5 w-2.5 border-b-2 border-r-2 border-cyan-300" />
 
-              <p className="text-[9px] font-bold tracking-widest text-blue-700">
+              <p className="text-[9px] font-bold tracking-[0.18em] text-slate-300">
                 PREMIUM COLLECTION
               </p>
 
-              <p className="mt-1 text-sm font-black text-blue-950">
+              <p className="mt-0.5 text-sm font-black text-cyan-300 sm:text-base">
                 Latest Smartphones
               </p>
             </div>
@@ -300,35 +389,93 @@ export default function HomePage({ user, onLogout, onProducts }) {
       </main>
 
       {/* FOOTER */}
-      <footer className="relative z-10 mt-10 bg-[#082b64] px-5 py-7 text-white">
-        <div className="mx-auto flex max-w-[1450px] flex-col items-center justify-between gap-4 sm:flex-row">
-
-          {/* FOOTER LOGO */}
-          <div className="flex items-center gap-3">
-            <Smartphone size={27} />
+      <footer className="relative z-10 border-t border-white/25 bg-white/20 px-5 py-4 text-slate-900 backdrop-blur-xl sm:px-8">
+        <div
+          style={{
+            width: "100%",
+            maxWidth: "1380px",
+            margin: "0 auto",
+            paddingLeft: "clamp(12px, 3vw, 32px)",
+            paddingRight: "clamp(12px, 3vw, 32px)",
+          }}
+          className="box-border flex flex-col items-center justify-between gap-3 sm:flex-row"
+        >
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-900/20 bg-white/40 text-slate-900 shadow-sm">
+              <Smartphone size={17} />
+            </div>
 
             <div>
-              <p className="font-black tracking-wide">
+              <p className="text-xs font-black leading-none tracking-wide text-slate-900 sm:text-sm">
                 SMOKIN ANDROIDS
               </p>
 
-              <p className="text-[9px] tracking-widest text-blue-200">
+              <p className="mt-0.5 text-[8px] font-bold tracking-[0.2em] text-slate-700">
                 PREMIUM SMARTPHONES
               </p>
             </div>
           </div>
 
-          {/* COPYRIGHT */}
-          <p className="text-center text-xs text-blue-100">
-            © 2026 SMOKIN ANDROIDS. All Rights Reserved.
+          <p className="text-center text-xs font-semibold text-slate-800">
+            © {new Date().getFullYear()} SMOKIN ANDROIDS. All Rights Reserved.
           </p>
 
-          {/* TAGLINE */}
-          <p className="text-xs text-blue-200">
+          <p className="text-xs font-semibold text-slate-800">
             Your Ultimate Smartphone Destination.
           </p>
         </div>
       </footer>
+
+      {/* FEATURE POPUP / MODAL */}
+      {selectedFeature && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 px-5 backdrop-blur-sm"
+          onClick={() => setSelectedFeature(null)}
+        >
+          <div
+            className="relative w-full max-w-md rounded-3xl border border-cyan-300/40 bg-gradient-to-br from-[#0b2342] via-[#12365e] to-[#07182e] p-8 text-center text-white shadow-[0_0_40px_rgba(56,189,248,0.25)] animate-[fadeIn_0.2s_ease-out]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* CLOSE BUTTON */}
+            <button
+              type="button"
+              onClick={() => setSelectedFeature(null)}
+              className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition hover:bg-red-500/30"
+              aria-label="Close popup"
+            >
+              <X size={20} />
+            </button>
+
+            {/* FEATURE ICON */}
+            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-cyan-300/40 bg-gradient-to-br from-sky-400/30 to-blue-900/50 text-cyan-300 shadow-[0_0_25px_rgba(56,189,248,0.25)]">
+              {selectedFeature.icon}
+            </div>
+
+            {/* TITLE */}
+            <h2 className="text-2xl font-black text-white">
+              {selectedFeature.title}
+            </h2>
+
+            <p className="mt-2 text-sm font-bold tracking-wide text-cyan-300">
+              {selectedFeature.subtitle}
+            </p>
+
+            {/* DESCRIPTION */}
+            <p className="mt-5 text-sm leading-7 text-slate-300">
+              {selectedFeature.description}
+            </p>
+
+            {/* CLOSE BUTTON */}
+            <button
+              type="button"
+              onClick={() => setSelectedFeature(null)}
+              className="mt-7 rounded-full border border-cyan-300/50 bg-gradient-to-r from-blue-600 to-sky-500 px-8 py-3 text-sm font-bold text-white shadow-[0_0_20px_rgba(56,189,248,0.3)] transition hover:scale-105"
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
